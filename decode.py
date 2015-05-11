@@ -53,13 +53,20 @@ good_attempts = []
 with open('wordlist.txt', 'rb') as words:
     lines = words.read().splitlines()
     for a in attempts:
+        # keep track of how many words we find
+        hits = 0
         tokens = a.split(" ")
+        alpha_tokens = [t for t in tokens if t.isalpha()]
+        total_tokens = len(alpha_tokens)
         for t in tokens:
             # we check to see if each word is a real dictionary word
             # if it is, then we add it to our "good" pile
             if t in lines:
-                if a not in good_attempts:
-                    good_attempts.append(a)
+                # we add one to our "hits" this means we found a real word
+                hits += 1.0 # to avoid precision errors when dividing
+        # we want at least 75% real words
+        if total_tokens > 0 and hits/total_tokens > 0.75 and a not in good_attempts:
+            good_attempts.append(a)
 
 print "\nperhaps one of these?"
 print "---------------------\n"
